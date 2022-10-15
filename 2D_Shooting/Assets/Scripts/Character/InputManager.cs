@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class InputManager : Singleton<InputManager>
 {
-    private float x = 0;
-    private float y = 0;
+    private float x = 0; // Move direction X
+    private float y = 0; // Move direction Y
+
+    public static bool isAimming = false; // 조준시 True
 
     public Vector3 dir
     {
@@ -20,9 +22,16 @@ public class InputManager : Singleton<InputManager>
     
     void Update()
     {
+        PCInput();
+
+    }
+
+    void PCInput()
+    {
         x = Input.GetAxis("Horizontal");
         y = Input.GetAxis("Vertical");
 
-        
+        if (Input.GetMouseButtonDown(1)) isAimming = true;
+        if (Input.GetMouseButtonUp(1)) isAimming = false;
     }
 }

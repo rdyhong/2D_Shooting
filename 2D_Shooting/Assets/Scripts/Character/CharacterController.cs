@@ -28,7 +28,7 @@ public class CharacterController : MonoBehaviour
 
     void Rot()
     {
-        transform.up = aim.position - transform.position;
+        transform.up = InputManager.Instance.dir;//aim.position - transform.position;
     }
 
     

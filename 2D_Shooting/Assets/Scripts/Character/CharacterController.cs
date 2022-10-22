@@ -9,12 +9,13 @@ public class CharacterController : MonoBehaviour
     [SerializeField] Transform aim;
 
     Rigidbody2D rb;
-    
+
 
     private void Awake()
     {
-        
+
     }
+
     void Update()
     {
         Move();
@@ -29,7 +30,9 @@ public class CharacterController : MonoBehaviour
     void Rot()
     {
         transform.up = InputManager.Instance.dir;//aim.position - transform.position;
+        if (transform.localEulerAngles.x != 0)
+        {
+            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, transform.localEulerAngles.z);
+        }
     }
-
-    
 }

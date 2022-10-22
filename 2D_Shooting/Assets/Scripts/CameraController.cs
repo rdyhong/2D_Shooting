@@ -16,7 +16,7 @@ public class CameraController : Singleton<CameraController>
 
     void Update()
     {
-        if (target != null)
+        if (target != null )
         {
             transform.position = Vector3.Slerp(transform.position, new Vector3( target.transform.position.x, target.transform.position.y, transform.position.z), 0.03f) ;
         }

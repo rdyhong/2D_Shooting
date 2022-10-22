@@ -42,11 +42,11 @@ public class CharacterController : MonoBehaviour
         if(InputManager.isAimming && !isOnAim)
         {
             isOnAim = true;
-
+            CameraController.Instance.SetCameraTarget(aim);
         }
-        else
+        if(!InputManager.isAimming && isOnAim)
         {
-            if (!isOnAim) return;
+            isOnAim = false;
 
 
         }

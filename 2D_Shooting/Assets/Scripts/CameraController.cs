@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class CameraController : Singleton<CameraController>
 {
-    public static Camera cam;
+    public static Camera mainCam;
     private Transform target;
 
 
     private void Start()
     {
-        cam = this.GetComponent<Camera>();
+        mainCam = this.GetComponent<Camera>();
         target = GameObject.Find("Player").transform;
     }
 

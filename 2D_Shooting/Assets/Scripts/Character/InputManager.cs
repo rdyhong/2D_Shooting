@@ -33,5 +33,6 @@ public class InputManager : Singleton<InputManager>
 
         if (Input.GetMouseButtonDown(1)) isAimming = true;
         if (Input.GetMouseButtonUp(1)) isAimming = false;
+
     }
 }

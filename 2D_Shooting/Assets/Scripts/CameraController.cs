@@ -20,6 +20,10 @@ public class CameraController : Singleton<CameraController>
         {
             transform.position = Vector3.Slerp(transform.position, new Vector3( target.transform.position.x, target.transform.position.y, transform.position.z), 0.03f) ;
         }
+        else
+        {
+            Debug.LogError("Camera Tartget is Null");
+        }
     }
 
     public void SetCameraTarget(Transform _target, Transform _parent = null)

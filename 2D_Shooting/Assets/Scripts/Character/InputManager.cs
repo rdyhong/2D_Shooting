@@ -31,8 +31,20 @@ public class InputManager : Singleton<InputManager>
         x = Input.GetAxis("Horizontal");
         y = Input.GetAxis("Vertical");
 
-        if (Input.GetMouseButtonDown(1)) isAimming = true;
-        if (Input.GetMouseButtonUp(1)) isAimming = false;
+        // Aim Check
+#if Unity_Editer
+        if (Input.GetMouseButtonDown(1))
+        {
+            isAimming = true;
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            isAimming = false;
+        }
+#else
+        // Button
+
+#endif
 
     }
 }

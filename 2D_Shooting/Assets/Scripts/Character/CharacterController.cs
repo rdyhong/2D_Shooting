@@ -7,6 +7,7 @@ public class CharacterController : MonoBehaviour
     [SerializeField] float speed;
 
     [SerializeField] Transform aim;
+    private bool isOnAim = false;
 
     Rigidbody2D rb;
 
@@ -34,5 +35,21 @@ public class CharacterController : MonoBehaviour
         {
             transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, transform.localEulerAngles.z);
         }
+    } 
+
+    void Aimming()
+    {
+        if(InputManager.isAimming && !isOnAim)
+        {
+            isOnAim = true;
+
+        }
+        else
+        {
+            if (!isOnAim) return;
+
+
+        }
     }
+    
 }

@@ -21,16 +21,17 @@ public class CharacterController : MonoBehaviour
     {
         Move();
         Rot();
+        Aimming();
     }
 
     void Move()
     {
-        transform.position = transform.position + InputManager.Instance.dir * speed * Time.deltaTime;
+        transform.position = transform.position + InputManager.Instance.Dir * speed * Time.deltaTime;
     }
 
     void Rot()
     {
-        transform.up = InputManager.Instance.dir;//aim.position - transform.position;
+        transform.up = InputManager.Instance.Dir;//aim.position - transform.position;
         if (transform.localEulerAngles.x != 0)
         {
             transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, transform.localEulerAngles.z);

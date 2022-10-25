@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class InputManager : Singleton<InputManager>
 {
-    private float x = 0; // Move direction X
-    private float y = 0; // Move direction Y
+    public Vector2 dir;
+    //private float x = 0; // Move direction X
+    //private float y = 0; // Move direction Y
 
     public static bool isAimming = false; // 조준시 True
 
-    public Vector3 dir
+    public Vector3 Dir
     {
         get
         {
-            Vector3 d = new Vector3(x, y, 0);
-            d = Vector3.ClampMagnitude(d, 1); // 길이를 1로 제한
+            Vector2 d = dir;
+            d = Vector2.ClampMagnitude(d, 1); // 길이를 1로 제한
             return d;
         }
     }
@@ -22,14 +23,14 @@ public class InputManager : Singleton<InputManager>
     
     void Update()
     {
-        PCInput();
+        //PCInput();
 
     }
 
     void PCInput()
     {
-        x = Input.GetAxis("Horizontal");
-        y = Input.GetAxis("Vertical");
+        dir.x = Input.GetAxis("Horizontal");
+        dir.y = Input.GetAxis("Vertical");
 
         // Aim Check
 #if Unity_Editer

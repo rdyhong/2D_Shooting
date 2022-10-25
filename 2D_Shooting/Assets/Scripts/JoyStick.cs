@@ -12,7 +12,7 @@ public class JoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     float m_fSpeed = 5.0f;
     float m_fSqr = 0f;
 
-    Vector3 m_vecMove;
+    //Vector3 m_vecMove;
 
     Vector2 m_vecNormal;
 
@@ -21,12 +21,12 @@ public class JoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     void Start()
     {
-        m_rectBack = transform.Find("LJoyStick/JoyStickBG").GetComponent<RectTransform>();
-        m_rectJoystick = transform.Find("LJoyStick/JoyStickBG/JoyStick").GetComponent<RectTransform>();
+        m_rectBack = transform.Find("JoyStickBG").GetComponent<RectTransform>();
+        m_rectJoystick = transform.Find("JoyStickBG/JoyStick").GetComponent<RectTransform>();
 
         moveTarget = GameObject.Find("Player").transform;
 
-        // JoyStickBG의 반지름입니다.
+        // JoyStickBG
         m_fRadius = m_rectBack.rect.width * 0.5f;
     }
 
@@ -34,28 +34,37 @@ public class JoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     {
         if (m_bTouch)
         {
-            moveTarget.position += m_vecMove;
+            //moveTarget.position += m_vecMove;
         }
 
     }
 
     void OnTouch(Vector2 vecTouch)
     {
+        Debug.Log(m_fRadius);
+
         Vector2 vec = new Vector2(vecTouch.x - m_rectBack.position.x, vecTouch.y - m_rectBack.position.y);
         Debug.Log(vec);
 
-        // vec값을 m_fRadius 이상이 되지 않도록 합니다.
+        Vector2 vecDir = new Vector2((m_fRadius - (vecTouch.x - m_rectBack.position.x)) / m_fRadius, (m_fRadius - (vecTouch.y - m_rectBack.position.y)) / m_fRadius);
+        Debug.Log(vecDir);
+
+        InputManager.Instance.dir = vec;
+        
+        
+        // 
         vec = Vector2.ClampMagnitude(vec, m_fRadius);
         m_rectJoystick.localPosition = vec;
 
-        // 조이스틱 배경과 조이스틱과의 거리 비율로 이동합니다.
+        // 
         float fSqr = (m_rectBack.position - m_rectJoystick.position).sqrMagnitude / (m_fRadius * m_fRadius);
 
-        // 터치위치 정규화
+        //
         Vector2 vecNormal = vec.normalized;
 
-        m_vecMove = new Vector3(vecNormal.x * m_fSpeed * Time.deltaTime * fSqr, 0f, vecNormal.y * m_fSpeed * Time.deltaTime * fSqr);
-        moveTarget.eulerAngles = new Vector3(0f, Mathf.Atan2(vecNormal.x, vecNormal.y) * Mathf.Rad2Deg, 0f);
+        //m_vecMove = new Vector3(vecNormal.x * m_fSpeed * Time.deltaTime * fSqr, 0f, vecNormal.y * m_fSpeed * Time.deltaTime * fSqr);
+        //moveTarget.eulerAngles = new Vector3(0f, Mathf.Atan2(vecNormal.x, vecNormal.y) * Mathf.Rad2Deg, 0f);
+        
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -66,14 +75,17 @@ public class JoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        m_vecNormal = eventData.position;
+        Debug.Log("m_Vecvor Normal = " + m_vecNormal);
         OnTouch(eventData.position);
         m_bTouch = true;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        // 원래 위치로 되돌립니다.
+        // 
         m_rectJoystick.localPosition = Vector2.zero;
         m_bTouch = false;
+        InputManager.Instance.dir = Vector2.zero;
     }
 }

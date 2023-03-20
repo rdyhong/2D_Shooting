@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "101609317093",
+    "firebase_url": "https://d-shooting-a2ba2-default-rtdb.firebaseio.com",
+    "project_id": "d-shooting-a2ba2",
+    "storage_bucket": "d-shooting-a2ba2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101609317093:android:573415b34a6683b9276a0c",
+        "android_client_info": {
+          "package_name": "com.vrab.shooting2d"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101609317093-iqkjue7ai3gfipe09aqj5tdel0f1r162.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3ZdqHk2-GQ1oHfUKNSU8wamCJ1MLEtDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101609317093-iqkjue7ai3gfipe09aqj5tdel0f1r162.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

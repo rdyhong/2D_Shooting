@@ -22,7 +22,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 1b2b01060fee8bb4185811c9a5f86a67
-    m_Address: Projectile
+    m_Address: Assets/Rdyhong/02_Prefabs/01.Object/Projectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 90b49e988ec030e4391052f184e74af4
+    m_Address: Assets/Rdyhong/02_Prefabs/02.UI/Content_RoomListEle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 27c1827c4accf1548bcd2f8343a23976
+    m_Address: Assets/Rdyhong/02_Prefabs/02.UI/Content_RoomPlayerInfo.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

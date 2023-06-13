@@ -17,11 +17,7 @@ public enum CharacterState
     Searching,
 }
 
-public enum GunState
-{ 
-    Ready,
-    Reloading,
-}
+
 
 public enum ObjectMaterial
 {

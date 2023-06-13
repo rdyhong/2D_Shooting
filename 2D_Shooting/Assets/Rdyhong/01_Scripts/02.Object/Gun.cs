@@ -28,6 +28,8 @@ public class Gun : MonoBehaviour
 
     protected float curruntDelay;
 
+    bool isMine = false;
+
     private void Awake()
     {
         firePos = transform.Find("FirePos");
@@ -50,6 +52,28 @@ public class Gun : MonoBehaviour
         if (InputMgr.isFire)
         {
             Fire();
+        }
+    }
+
+    public void SwitchState(GunState _state)
+    {
+        state = _state;
+
+        switch(state)
+        {
+            case GunState.Ground:
+                ModelObj_Equip.SetActive(false);
+                ModelObj_Ground.SetActive(true);
+                break;
+
+            case GunState.Equiped:
+                ModelObj_Equip.SetActive(true);
+                ModelObj_Ground.SetActive(false);
+                break;
+
+            case GunState.Reloading:
+
+                break;
         }
     }
 
@@ -81,13 +105,15 @@ public class Gun : MonoBehaviour
         projectileData.thickness = 0.1f;
         projectileData.name = "9mm";
 
-        projectile.SetProjectile(projectileData);
+        projectile.SetProjectile(projectileData, isMine);
 
         CameraController.CamShotEffect(2);
     }
 
-    public Gun Equip(Transform _parent)
+    public Gun Equip(Transform _parent, bool _isMine)
     {
+        isMine = _isMine;
+
         transform.SetParent(_parent);
         transform.localPosition = Vector3.zero;
 

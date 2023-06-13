@@ -11,13 +11,17 @@ public class Projectile : MonoBehaviour
     bool hited = false;
     bool isActive = false;
 
+    bool isMine = false;
+
     private void Awake()
     {
         trailRenderer = transform.GetComponent<TrailRenderer>();
     }
 
-    public void SetProjectile(AmmoData _data)
+    public void SetProjectile(AmmoData _data, bool _isMine)
     {
+        isMine = _isMine;
+
         isActive = true;
         hited = false;
 

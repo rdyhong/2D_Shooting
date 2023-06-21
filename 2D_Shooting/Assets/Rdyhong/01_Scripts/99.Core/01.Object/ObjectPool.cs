@@ -68,6 +68,7 @@ public partial class ObjectPool : Singleton<ObjectPool>
         // UI
         CreatePool<Content_RoomListEle>("Assets/Rdyhong/02_Prefabs/02.UI/Content_RoomListEle.prefab", 20);
         CreatePool<Content_RoomPlayerInfo>("Assets/Rdyhong/02_Prefabs/02.UI/Content_RoomPlayerInfo.prefab", 20);
+        CreatePool<UI_OnFieldItem>("Assets/Rdyhong/02_Prefabs/02.UI/UI_OnFieldItem.prefab", 20);
 
         isComplete = true;
 

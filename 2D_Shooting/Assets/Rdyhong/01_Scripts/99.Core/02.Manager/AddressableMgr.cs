@@ -57,6 +57,7 @@ public class AddressableMgr : Singleton<AddressableMgr>
         // UI Prefab
         AddLoadQueue("Assets/Rdyhong/02_Prefabs/02.UI/Content_RoomListEle.prefab");
         AddLoadQueue("Assets/Rdyhong/02_Prefabs/02.UI/Content_RoomPlayerInfo.prefab");
+        AddLoadQueue("Assets/Rdyhong/02_Prefabs/02.UI/UI_OnFieldItem.prefab");
 
         // Load UI Prefab
 

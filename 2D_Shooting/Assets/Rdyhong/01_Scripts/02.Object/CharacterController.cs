@@ -30,8 +30,9 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
 
     private Transform aimPos;
     private Transform camPos;
+    private Transform gunPos;
 
-    Gun equipedGun = null;
+    Gun equiped_Main = null;
 
     private void Awake()
     {
@@ -39,12 +40,14 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
 
         aimPos = transform.Find("AimPos");
         camPos = transform.Find("CamPos");
+        gunPos = transform.Find("GunPos");
     }
 
     private void Start()
     {
         // Test
-        Init();
+        if(photonView.IsMine)
+            Init();
     }
 
     public void Init()
@@ -53,6 +56,17 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
         InGameMgr.SetMyCharacter(this);
 
         sprintSpeed = baseSpeed + baseSpeed * 0.3f;
+
+        photonView.RPC("RPC_Init", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void RPC_Init()
+    {
+        transform.SetParent(InGameMgr.Inst.playerParent);
+
+        string nickName = PhotonNetwork.LocalPlayer.NickName == string.Empty ? "NoName" : PhotonNetwork.LocalPlayer.NickName;
+        gameObject.name = $"Player_{nickName}";
     }
 
     void Update()
@@ -61,6 +75,12 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
         {
             Move();
             Aimming();
+
+            // Test
+            if(Input.GetKeyDown(KeyCode.D))
+            {
+                DropItem();
+            }
         }
     }
 
@@ -109,5 +129,34 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
         }
     }
 
-    
+    public void EquipItem(int idx)
+    {
+        photonView.RPC("RPC_EquipItem", RpcTarget.All, idx);
+        
+    }
+
+    public void DropItem()
+    {
+        //photonView.RPC("RPC_DropItem", RpcTarget.All, null);
+
+        
+    }
+
+    [PunRPC]
+    void RPC_EquipItem(Gun _equip)
+    {
+        DropItem();
+
+        equiped_Main = _equip;
+        //_equip.Equip(gunPos, photonView.IsMine);
+    }
+
+    [PunRPC]
+    void RPC_DropItem()
+    {
+        if (equiped_Main == null) return;
+
+        equiped_Main.Drop(transform.up);
+        equiped_Main = null;
+    }
 }

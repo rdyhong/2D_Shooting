@@ -13,6 +13,8 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
 
     public override void OnCreatedRoom()
     {
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Room_Ready", true } });
+
         createRoomCB?.Invoke();
     }
     public override void OnJoinedRoom()
@@ -24,11 +26,41 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
-
+        ResetLocalCustomProperties();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        if (isMasterClient)
+        {
+            newPlayer.SetCustomProperties(new Hashtable { { "Room_Ready", false } });
+
+            // Team property Setting
+            int redCount = 0;
+            int blueCount = 0;
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                if (PhotonNetwork.PlayerList[i] == newPlayer) continue; // Skip if newPlayer
+
+                if (PhotonNetwork.PlayerList[i].CustomProperties["TeamType"].ToString() == "Red")
+                    redCount++;
+                else
+                    blueCount++;
+            }
+            // if player count is more than 2
+            if (PhotonNetwork.CountOfPlayers > 1)
+            {
+                if (redCount <= blueCount)
+                {
+                    newPlayer.SetCustomProperties(new Hashtable { { "TeamType", "Red" } });
+                }
+                else
+                {
+                    newPlayer.SetCustomProperties(new Hashtable { { "TeamType", "Blue" } });
+                }
+            }
+        }
+
         UI_InRoom.UpdateRoomUI();
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)

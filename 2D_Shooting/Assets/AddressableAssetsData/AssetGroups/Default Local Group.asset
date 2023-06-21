@@ -33,6 +33,10 @@ MonoBehaviour:
     m_Address: Assets/Rdyhong/02_Prefabs/02.UI/Content_RoomPlayerInfo.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 79a0950dae6880342985c02deb3eaaf0
+    m_Address: Assets/Rdyhong/02_Prefabs/02.UI/UI_OnFieldItem.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 65fbffc605192fd4b8435559c05a2b28, type: 2}
   m_SchemaSet:

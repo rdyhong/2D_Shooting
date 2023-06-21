@@ -291,4 +291,9 @@ public static class Util
     {
         target.sizeDelta = new Vector2(refTarget.rect.width, target.sizeDelta.y);
     }
+
+    public static Vector2 GetScreenSize()
+    {
+        return new Vector2(Screen.width, Screen.height);
+    }
 }

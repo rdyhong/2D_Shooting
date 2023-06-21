@@ -13,15 +13,28 @@ public class UI_OnFieldItem : MonoBehaviour
     Transform targetTf;
     Action BtnCB = null;
 
+    bool isActive = false;
+
     private void Start()
     {
+        
+
+        
+    }
+
+    public void Init(Transform _targetTf, string _name, Action _action)
+    {
+        gameObject.SetActive(false);
+
+        transform.SetParent(InGameMgr.Inst.ItemUIParent);
+
+        RectTransform rt = GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(Util.GetScreenSize().x / 7, Util.GetScreenSize().y / 12);
+
         btn.onClick.AddListener(() => {
             BtnCB?.Invoke();
         });
-    }
 
-    public void Spawn(Transform _targetTf, string _name, Action _action)
-    {
         targetTf = _targetTf;
         _nameTmp.text = _name;
         BtnCB = _action;
@@ -29,13 +42,31 @@ public class UI_OnFieldItem : MonoBehaviour
 
     private void Update()
     {
-        if (targetTf == null) return;
+        if (!isActive) return;
 
-        transform.position = targetTf.position;
+        transform.position = Camera.main.WorldToScreenPoint(targetTf.position + Vector3.up);
+    }
+
+    public void Active(bool _active)
+    {
+        if (isActive == _active) return;
+
+        isActive = _active;
+
+        if(isActive)
+        {
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void Recycle()
     {
+        targetTf = null;
+        BtnCB = null;
         ObjectPool.Recycle(this);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GunAndAmmoData : Singleton<GunAndAmmoData>
 {
-    public static Dictionary<GunType, GunData> gunData = new Dictionary<GunType, GunData>();
+    //public static Dictionary<GunType, GunData> gunData = new Dictionary<GunType, GunData>();
     public static Dictionary<MagType, MagData> magData = new Dictionary<MagType, MagData>();
     public static Dictionary<AmmoType, AmmoData> ammoData = new Dictionary<AmmoType, AmmoData>();
 
@@ -18,6 +18,7 @@ public class GunAndAmmoData : Singleton<GunAndAmmoData>
     void InitData()
     {
         // GunData Init
+        /*
         for(int i = 0; i < (int)GunType.Max; i++)
         {
             int idx = i + 1;
@@ -30,7 +31,7 @@ public class GunAndAmmoData : Singleton<GunAndAmmoData>
             
             gunData[(GunType)i] = _data;
         }
-
+        */
         // AmmoData Init
         for (int i = 0; i < (int)GunType.Max; i++)
         {
@@ -57,21 +58,7 @@ public class GunAndAmmoData : Singleton<GunAndAmmoData>
     }
 }
 
-public class GunData
-{
-    public int idx;
 
-    public string name;
-    public string iconPath;
-
-    public float delay;
-    public float range;
-    public float forcePower;
-
-    public bool isAmmoEmpty;
-    
-    public MagData magData = new MagData();
-}
 
 public struct AmmoData
 {

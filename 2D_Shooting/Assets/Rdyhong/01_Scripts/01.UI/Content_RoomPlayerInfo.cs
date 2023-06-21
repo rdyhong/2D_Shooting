@@ -20,7 +20,15 @@ public class Content_RoomPlayerInfo : MonoBehaviour
         }
         else
         {
-            readyObj.SetActive(false);
+            if ((bool)_player.CustomProperties["Room_Ready"])
+            {
+                readyTmp.text = "Ready";
+                readyObj.SetActive(true);
+            }
+            else
+            {
+                readyObj.SetActive(false);
+            }
         }
 
         nameTmp.text = _player.NickName;

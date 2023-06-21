@@ -44,6 +44,9 @@ MonoBehaviour:
   - StartBtnAction
   - StartGame
   - RPC_LoadScene
+  - RPC_DropItem
+  - RPC_EquipItem
+  - RPC_Init
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -8,14 +8,10 @@ using ExitGames.Client.Photon;
 
 public partial class Photon_Controller : MonoBehaviourPunCallbacks
 {
-    PhotonView pv;
-
     Action masterConnectCB;
-    
     
     private void Awake()
     {
-        pv = GetComponent<PhotonView>();
         PhotonMgr.controller = this;
     }
     public void Init(Action _callback = null)
@@ -66,6 +62,7 @@ public partial class Photon_Controller : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         PhotonMgr.OnWorking = false;
+        NoticeMgr.AddNotice($"{cause}", "Disconnected");
         DebugMgr.Log($"Photon ::: OnDisconnected by {cause}");
     }
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -77,6 +74,8 @@ public partial class Photon_Controller : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        Photon_Room.ResetLocalCustomProperties();
+
         PhotonMgr.OnWorking = false;
         DebugMgr.Log("Photon ::: OnJoinedLobby");
     }
@@ -140,7 +139,7 @@ public partial class Photon_Controller : MonoBehaviourPunCallbacks
         PhotonMgr.OnWorking = false;
     }
 
-    // Error Callback
+    // Other Error
 
     public override void OnErrorInfo(ErrorInfo errorInfo)
     {

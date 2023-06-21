@@ -48,6 +48,16 @@ public class UI_InRoom : UIWindow
                         
                     });
                     break;
+                case "TeamName_Red":
+                    _btn.onClick.AddListener(() => {
+                        Photon_Room.SwitchTeam("Red");
+                    });
+                    break;
+                case "TeamName_Blue":
+                    _btn.onClick.AddListener(() => {
+                        Photon_Room.SwitchTeam("Blue");
+                    });
+                    break;
             }
         }
     }
@@ -57,9 +67,6 @@ public class UI_InRoom : UIWindow
         base.Open(force, duration, callback, fallback);
 
         RoomUIUpdate();
-
-
-
 
         startBtn.interactable = true;
     }
@@ -80,6 +87,7 @@ public class UI_InRoom : UIWindow
         if (Photon_Room.isMasterClient)
         {
             GetTmp("Tmp_Btn_Start").text = "Start";
+            startBtn.interactable = true;
         }
         else
         {
@@ -93,6 +101,7 @@ public class UI_InRoom : UIWindow
     public void RoomUIUpdate()
     {
         TextSetting();
+
         PlayerInfoUpdate();
     }
 
@@ -116,7 +125,14 @@ public class UI_InRoom : UIWindow
         for(int i = 0; i < players.Length; i++)
         {
             Content_RoomPlayerInfo _ele = ObjectPool.Spawn<Content_RoomPlayerInfo>("Content_RoomPlayerInfo");
-            _ele.transform.SetParent(contentParent_Red);
+            if(players[i].CustomProperties["TeamType"].ToString() == "Red")
+            {
+                _ele.transform.SetParent(contentParent_Red);
+            }
+            else
+            {
+                _ele.transform.SetParent(contentParent_Blue);
+            }
             _ele.transform.localScale = Vector3.one;
             _ele.Init(players[i]);
             playerElements.Add(_ele);
@@ -138,13 +154,15 @@ public class UI_InRoom : UIWindow
     {
         if (Photon_Room.isMasterClient)
         {
-            PhotonMgr.controller.LoadScene(SceneKind.InGame);
-            
+            if (Photon_Room.IsAllPlayerReady())
+                PhotonMgr.controller.LoadScene(SceneKind.InGame);
+            else
+                NoticeMgr.AddNotice("UnReady player exist", "Wait For Other Player");
         }
         else
         {
             // Ready
-            
+            Photon_Room.GetReady();
         }
     }
 }

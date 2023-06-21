@@ -8,8 +8,6 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public partial class Photon_Room : MonoBehaviourPunCallbacks
 {
-    
-
     private void Awake()
     {
         PhotonMgr.room = this;
@@ -17,6 +15,13 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
 
     public static bool isInRoom { get { return PhotonNetwork.InRoom; } }
     public static bool isMasterClient { get { return PhotonNetwork.IsMasterClient; } }
+
+    public static void ResetLocalCustomProperties()
+    {
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Player_Index", -1 } });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "TeamType", "Red" } });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Room_Ready", false } });
+    }
 
     public static void CreatedRoom(string _roomName = null, RoomOptions _option = null, Action _callback = null)
     {
@@ -28,6 +33,8 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
 
     public static void JoinRoom(string _roomName = null)
     {
+        if (PhotonNetwork.InRoom) return;
+
         PhotonMgr.OnWorkingBlock();
 
         foreach(RoomInfo _info in GetAllRoomInfo())
@@ -78,6 +85,18 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
+    public static void GetReady()
+    {
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["Room_Ready"] == true) return;
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Room_Ready", true } });
+    }
+    public static void SwitchTeam(string _teamName)
+    {
+        if(PhotonNetwork.LocalPlayer.CustomProperties["TeamType"].ToString() != _teamName)
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "TeamType", _teamName } });
+    }
+
     public static string GetRoomName()
     {
         return PhotonNetwork.CurrentRoom.Name;
@@ -100,18 +119,32 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
     {
         return PhotonNetwork.PlayerList;
     }
-    public static bool IsAllReady()
+
+    public static void SetRoomPlayersIndex()
+    {
+        if (!isMasterClient) return;
+        
+        
+    }
+    public static bool IsAllPlayerReady()
     {
         Player[] players = PhotonNetwork.PlayerList;
-        for (int i = 0; i > players.Length; i++)
+
+        for (int i = 0; i < players.Length; i++)
         {
-            //players[i].SetCustomProperties(new Hashtable() { { "Room_Ready", false } });
-            bool isReady = (bool)players[i].CustomProperties["Room_Ready"];
-            if (!isReady)
+            if (!(bool)players[i].CustomProperties["Room_Ready"])
             {
                 return false;
             }
         }
+
+        return true;
+    }
+
+    public static bool CheckGameStartCondition()
+    {
+        if (PhotonNetwork.CountOfPlayers < 2) return false;
+        if (!IsAllPlayerReady()) return false;
 
         return true;
     }

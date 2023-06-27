@@ -3,35 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using Photon.Pun;
 
 public enum GunState
 {
     None = -1,
 
-    Ground,
-    Equiped,
     Reloading,
 }
 
 [Serializable]
 public class GunData
 {
-    public int idx;
-
     public string name;
     public string iconPath;
 
     public float shotDelay;
     public float reloadTime;
-    public float range;
-    public float forcePower;
 
-    public bool isAmmoEmpty;
+    public bool isChamberEmpty = true;
 
     public MagData magData = new MagData();
 }
 
-public class Gun : Weapon_Base
+public class Gun : Item_Base
 {
     public static int weaponCount = 0;
     [SerializeField] BoxCollider2D boxCol;
@@ -55,15 +50,21 @@ public class Gun : Weapon_Base
     protected override void Awake()
     {
         base.Awake();
+
         firePos = transform.Find("FirePos");
-        _onFieldUI = ObjectPool.Spawn<UI_OnFieldItem>("UI_OnFieldItem");
-        _onFieldUI.Init(transform, "TempGunName", () => {
-            InGameMgr.myCharacter.EquipItem(idx);
-        });
+        
 
         // Set temp data
-        gunData.idx = weaponCount++;
+        gunData.name = "Super Power Rifle";
         gunData.shotDelay = 0.1f;
+
+        _onFieldUI = ObjectPool.Spawn<UI_OnFieldItem>("UI_OnFieldItem");
+        _onFieldUI.Init(transform, gunData.name, () => {
+            InGameMgr.myCharacter.EquipItem(this.idx);
+        });
+
+        // Test
+        //photonView.Owner = null;
     }
 
     public void Init(GunData _data)
@@ -78,37 +79,12 @@ public class Gun : Weapon_Base
         if (curruntDelay > 0)
             curruntDelay -= TimeMgr.ObjDeltaTime;
 
-        if (InputMgr.isFire)
-        {
-            Fire();
-        }
-    }
-
-    public void SwitchState(GunState _state)
-    {
-        state = _state;
-
-        switch(state)
-        {
-            case GunState.Ground:
-                ModelObj_Equip.SetActive(false);
-                ModelObj_Ground.SetActive(true);
-                break;
-
-            case GunState.Equiped:
-                ModelObj_Equip.SetActive(true);
-                ModelObj_Ground.SetActive(false);
-                break;
-
-            case GunState.Reloading:
-
-                break;
-        }
+        
     }
 
     bool CheckFireCondition()
     {
-        if (curruntDelay <= 0 && state == GunState.Equiped)
+        if (curruntDelay <= 0)
         {
             return true;
         }
@@ -116,9 +92,11 @@ public class Gun : Weapon_Base
         return false;
     }
 
-    public void Fire()
+    public override void Use()
     {
         if (!CheckFireCondition()) return;
+
+        base.Use();
 
         curruntDelay = gunData.shotDelay;
 
@@ -140,12 +118,15 @@ public class Gun : Weapon_Base
         CameraController.CamShotEffect(2);
     }
 
-    public override void Equip(int idx)
+    public override void Equip(CharacterController _c, Transform _parent)
     {
-        //isMine = _isMine;
+        transform.DOKill();
 
-        SwitchState(GunState.Equiped);
-        
+        base.Equip(_c, _parent);
+
+        ModelObj_Equip.SetActive(true);
+        ModelObj_Ground.SetActive(false);
+
         _onFieldUI.Active(false);
 
         //transform.SetParent(_parent);
@@ -153,28 +134,31 @@ public class Gun : Weapon_Base
         transform.localRotation = Quaternion.identity;
     }
 
-    public void Drop(Vector3 _dropDir)
+    public override void Drop(Vector3 _dropDir)
     {
-        transform.SetParent(null);
+        base.Drop(_dropDir);
+
+        ModelObj_Equip.SetActive(false);
+        ModelObj_Ground.SetActive(true);
+
         transform.DOMove(transform.position + _dropDir, 0.7f).SetAutoKill();
         transform.DORotate(transform.rotation.eulerAngles +
             new Vector3(transform.rotation.eulerAngles.x,
             transform.rotation.eulerAngles.y,
             transform.rotation.eulerAngles.z + UnityEngine.Random.Range(-20f,20f)), 0.7f);
-        SwitchState(GunState.Ground);
-
     }
 
     UI_OnFieldItem _onFieldUI = null;
     void ShowUIOnGround()
     {
-        if (state != GunState.Ground || InGameMgr.myCharacter == null)
+        if (fieldState != ItemFieldState.Ground || InGameMgr.myCharacter == null)
         {
             return; 
         }
 
         float _length = (InGameMgr.myCharacter.transform.position - transform.position).magnitude;
-        if(_length < 1)
+
+        if(_length < 1.5f)
         {
             _onFieldUI.Active(true);
         }

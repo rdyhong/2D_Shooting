@@ -52,20 +52,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   idx: 0
+  ownerExist: 0
+  fieldState: 0
   boxCol: {fileID: 5832996491371933415}
   onGroundTrigger: {fileID: 5832996491371933433}
   ModelObj_Equip: {fileID: 5832996491706858817}
   ModelObj_Ground: {fileID: 5832996491548963893}
   state: 1
   gunData:
-    idx: 0
     name: 
     iconPath: 
     shotDelay: 0
     reloadTime: 0
-    range: 0
-    forcePower: 0
-    isAmmoEmpty: 0
+    isChamberEmpty: 1
 --- !u!61 &5832996491371933415
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -388,7 +387,7 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 2
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:

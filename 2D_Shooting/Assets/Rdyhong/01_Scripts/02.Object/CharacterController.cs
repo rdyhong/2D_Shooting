@@ -31,8 +31,10 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
     private Transform aimPos;
     private Transform camPos;
     private Transform gunPos;
+    private GameObject obj_nightVision;
+    private GameObject obj_baseLight;
 
-    Gun equiped_Main = null;
+    Item_Base equiped_Item = null;
 
     private void Awake()
     {
@@ -41,23 +43,41 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
         aimPos = transform.Find("AimPos");
         camPos = transform.Find("CamPos");
         gunPos = transform.Find("GunPos");
+        obj_nightVision = transform.Find("NightVision").gameObject;
+        obj_baseLight = transform.Find("BaseLight").gameObject;
     }
 
     private void Start()
     {
         // Test
-        if(photonView.IsMine)
+        
             Init();
     }
 
     public void Init()
     {
-        CameraController.SetCameraTarget(camPos);
-        InGameMgr.SetMyCharacter(this);
+        if (photonView.IsMine)
+        {
+            CameraController.SetCameraTarget(camPos);
 
-        sprintSpeed = baseSpeed + baseSpeed * 0.3f;
+            InGameMgr.SetMyCharacter(this);
 
-        photonView.RPC("RPC_Init", RpcTarget.All);
+            sprintSpeed = baseSpeed + baseSpeed * 0.3f;
+
+            photonView.RPC("RPC_Init", RpcTarget.All);
+
+            obj_nightVision.SetActive(true);
+            obj_baseLight.SetActive(true);
+
+            rb.bodyType = RigidbodyType2D.Dynamic;
+        }
+        else
+        {
+            obj_nightVision.SetActive(false);
+            obj_baseLight.SetActive(false);
+
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
     }
 
     [PunRPC]
@@ -80,6 +100,12 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
             if(Input.GetKeyDown(KeyCode.D))
             {
                 DropItem();
+            }
+
+            if (InputMgr.isFire)
+            {
+                if(equiped_Item != null)
+                    equiped_Item.Use();
             }
         }
     }
@@ -131,32 +157,53 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
 
     public void EquipItem(int idx)
     {
-        photonView.RPC("RPC_EquipItem", RpcTarget.All, idx);
-        
-    }
-
-    public void DropItem()
-    {
-        //photonView.RPC("RPC_DropItem", RpcTarget.All, null);
-
-        
+        photonView.RPC(nameof(RPC_EquipItem_Proccess), RpcTarget.MasterClient, idx);
     }
 
     [PunRPC]
-    void RPC_EquipItem(Gun _equip)
+    void RPC_EquipItem_Proccess(int _idx)
     {
-        DropItem();
+        // Check on MasterClient
 
-        equiped_Main = _equip;
+        if(PhotonMgr.ingame.allWeapons[_idx].ownerExist)
+        {
+            DebugMgr.LogErr($"Index_[{_idx}] -> Already Owner Exist");
+            return;
+        }
+        
+        photonView.RPC(nameof(RPC_EquipItem), RpcTarget.All, _idx);
+        //equiped_Main = _equip;
         //_equip.Equip(gunPos, photonView.IsMine);
+    }
+
+    [PunRPC]
+    void RPC_EquipItem(int _idx)
+    {
+        if(equiped_Item != null) RPC_DropItem();
+
+        equiped_Item = PhotonMgr.ingame.allWeapons[_idx];
+        equiped_Item.Equip(this, gunPos);
+    }
+
+
+    public void DropItem()
+    {
+        photonView.RPC(nameof(RPC_DropItem_Proccess), RpcTarget.MasterClient, equiped_Item.idx);
+    }
+
+    [PunRPC]
+    void RPC_DropItem_Proccess(int _idx)
+    {
+        // Check on MasterClient
+        if (!PhotonMgr.ingame.allWeapons[_idx].ownerExist) return;
+
+        photonView.RPC(nameof(RPC_DropItem), RpcTarget.All, null);
     }
 
     [PunRPC]
     void RPC_DropItem()
     {
-        if (equiped_Main == null) return;
-
-        equiped_Main.Drop(transform.up);
-        equiped_Main = null;
+        equiped_Item.Drop(transform.up);
+        equiped_Item = null;
     }
 }

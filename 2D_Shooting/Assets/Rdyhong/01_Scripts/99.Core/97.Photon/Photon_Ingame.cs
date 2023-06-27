@@ -8,6 +8,13 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Photon_Ingame : MonoBehaviourPun
 {
+    public List<Item_Base> allWeapons = new List<Item_Base>();
+
+    private void Awake()
+    {
+        PhotonMgr.ingame = this;
+    }
+
     private void Start()
     {
         SpawnPlayer(Vector3.zero, Quaternion.identity);
@@ -18,15 +25,9 @@ public class Photon_Ingame : MonoBehaviourPun
         PhotonNetwork.Instantiate("Photon_Resource/Player", _pos, _rot);
     }
 
-    public void EquipItem(int _playerIdx, int _itemIdx)
+    public void AddWeaponList(Item_Base _weapon)
     {
-        photonView.RPC("RPC_EquipItem", RpcTarget.All, _playerIdx, _itemIdx);
+        allWeapons.Add(_weapon);
     }
 
-    [PunRPC]
-    void RPC_EquipItem(int _playerIdx, int _itemIdx)
-    {
-        
-
-    }
 }

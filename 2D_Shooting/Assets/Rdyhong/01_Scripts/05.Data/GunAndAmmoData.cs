@@ -69,7 +69,7 @@ public struct AmmoData
     public float thickness;
 }
 
-public class MagData
+public struct MagData
 {
     public string name;
 

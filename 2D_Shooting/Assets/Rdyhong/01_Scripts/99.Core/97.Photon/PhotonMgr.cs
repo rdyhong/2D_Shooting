@@ -13,7 +13,7 @@ public class PhotonMgr : Singleton<PhotonMgr>
 
     public static Photon_Controller controller;
     public static Photon_Room room;
-
+    public static Photon_Ingame ingame;
     
 
     public static void Init(Action _callback)

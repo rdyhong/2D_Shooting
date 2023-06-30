@@ -85,7 +85,7 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
     {
         transform.SetParent(InGameMgr.Inst.playerParent);
 
-        string nickName = PhotonNetwork.LocalPlayer.NickName == string.Empty ? "NoName" : PhotonNetwork.LocalPlayer.NickName;
+        string nickName = PhotonNetwork.LocalPlayer.NickName;
         gameObject.name = $"Player_{nickName}";
     }
 
@@ -195,6 +195,8 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
     void RPC_DropItem_Proccess(int _idx)
     {
         // Check on MasterClient
+
+        // return if awner is null
         if (!PhotonMgr.ingame.allWeapons[_idx].ownerExist) return;
 
         photonView.RPC(nameof(RPC_DropItem), RpcTarget.All, null);

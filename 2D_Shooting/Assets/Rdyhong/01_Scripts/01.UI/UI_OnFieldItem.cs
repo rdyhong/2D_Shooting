@@ -18,8 +18,6 @@ public class UI_OnFieldItem : MonoBehaviour
     private void Start()
     {
         
-
-        
     }
 
     public void Init(Transform _targetTf, string _name, Action _action)

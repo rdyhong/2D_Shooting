@@ -143,9 +143,7 @@ public class Gun : Item_Base
 
         transform.DOMove(transform.position + _dropDir, 0.7f).SetAutoKill();
         transform.DORotate(transform.rotation.eulerAngles +
-            new Vector3(transform.rotation.eulerAngles.x,
-            transform.rotation.eulerAngles.y,
-            transform.rotation.eulerAngles.z + UnityEngine.Random.Range(-20f,20f)), 0.7f);
+            new Vector3(0, 0, UnityEngine.Random.Range(-20f,20f)), 0.7f);
     }
 
     UI_OnFieldItem _onFieldUI = null;

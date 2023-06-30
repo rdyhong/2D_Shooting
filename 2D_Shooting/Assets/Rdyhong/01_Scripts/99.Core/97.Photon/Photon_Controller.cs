@@ -24,13 +24,15 @@ public partial class Photon_Controller : MonoBehaviourPunCallbacks
 
     public void LoadScene(SceneKind _scene)
     {
-        photonView.RPC("RPC_LoadScene", RpcTarget.All);
+        photonView.RPC(nameof(RPC_LoadScene), RpcTarget.All);
         
     }
     [PunRPC]
     void RPC_LoadScene()
     {
         PhotonMgr.OnWorkingBlock();
+
+        Photon_Room.isInGame = true;
 
         SceneMgr.Inst.LoadScene(SceneKind.InGame);
     }
@@ -74,7 +76,13 @@ public partial class Photon_Controller : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        Photon_Room.ResetLocalCustomProperties();
+        Photon_Room.ResetCustomProperties();
+
+        //Temp NickName Set
+        if(PhotonNetwork.LocalPlayer.NickName == string.Empty)
+        {
+            PhotonNetwork.LocalPlayer.NickName = $"User_{UnityEngine.Random.Range(int.MinValue, int.MaxValue)}";
+        }
 
         PhotonMgr.OnWorking = false;
         DebugMgr.Log("Photon ::: OnJoinedLobby");

@@ -13,7 +13,10 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
 
     public override void OnCreatedRoom()
     {
+        // Player
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Room_Ready", true } });
+        // Room
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "InGame_Start", false } });
 
         createRoomCB?.Invoke();
     }
@@ -26,7 +29,7 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
-        ResetLocalCustomProperties();
+        ResetCustomProperties();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -75,11 +78,11 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
     }
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
-        UI_InRoom.UpdateRoomUI();
+        if(!Photon_Room.isInGame) UI_InRoom.UpdateRoomUI();
     }
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        UI_InRoom.UpdateRoomUI();
+        if (!Photon_Room.isInGame) UI_InRoom.UpdateRoomUI();
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)

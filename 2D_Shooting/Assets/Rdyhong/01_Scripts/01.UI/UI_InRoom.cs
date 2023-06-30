@@ -120,7 +120,7 @@ public class UI_InRoom : UIWindow
     {
         RemoveAllPlayerInfoContent();
 
-        Photon.Realtime.Player[] players = Photon_Room.GetAllPlayer();
+        Photon.Realtime.Player[] players = Photon_Room.GetSortedPlayersByActorNumber();
         
         for(int i = 0; i < players.Length; i++)
         {

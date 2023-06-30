@@ -5,6 +5,7 @@ using UnityEngine;
 public class InGameMgr : Singleton<InGameMgr>
 {
     public static CharacterController myCharacter;
+
     public Transform playerParent;
     public Transform weaponParent;
     public Transform ItemUIParent;

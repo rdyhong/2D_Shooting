@@ -8,6 +8,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public partial class Photon_Room : MonoBehaviourPunCallbacks
 {
+    public static bool isInGame = false;
     private void Awake()
     {
         PhotonMgr.room = this;
@@ -16,11 +17,13 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
     public static bool isInRoom { get { return PhotonNetwork.InRoom; } }
     public static bool isMasterClient { get { return PhotonNetwork.IsMasterClient; } }
 
-    public static void ResetLocalCustomProperties()
+    public static void ResetCustomProperties()
     {
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Player_Index", -1 } });
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "TeamType", "Red" } });
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Room_Ready", false } });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "InGame_Join", false } });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "InGame_Start", false } });
     }
 
     public static void CreatedRoom(string _roomName = null, RoomOptions _option = null, Action _callback = null)
@@ -28,6 +31,7 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
         PhotonMgr.OnWorkingBlock();
 
         createRoomCB = _callback;
+
         PhotonNetwork.CreateRoom(_roomName, _option, null);
     }
 
@@ -67,7 +71,7 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
         options.MaxPlayers = _maxPlayer;
         options.IsOpen = _isOpen;
         options.IsVisible = _isVisible;
-
+        
         return options;
     }
 
@@ -119,6 +123,29 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
     {
         return PhotonNetwork.PlayerList;
     }
+    public static Player[] GetSortedPlayersByActorNumber()
+    {
+        Player[] _result = new Player[PhotonNetwork.PlayerList.Length];
+
+        Player _minP = null;
+
+        for(int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            _minP = PhotonNetwork.PlayerList[i];
+
+            for (int k = i + 1; k < PhotonNetwork.PlayerList.Length; k++)
+            {
+                if(_minP.ActorNumber > PhotonNetwork.PlayerList[k].ActorNumber)
+                {
+                    _minP = PhotonNetwork.PlayerList[k];
+                }
+            }
+
+            _result[i] = _minP;
+        }
+
+        return _result;
+    }
 
     public static void SetRoomPlayersIndex()
     {
@@ -126,6 +153,7 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
         
         
     }
+
     public static bool IsAllPlayerReady()
     {
         Player[] players = PhotonNetwork.PlayerList;
@@ -139,6 +167,27 @@ public partial class Photon_Room : MonoBehaviourPunCallbacks
         }
 
         return true;
+    }
+    public static int GetMyOrderInMyTeam()
+    {
+        Player[] _players = GetSortedPlayersByActorNumber();
+
+        string myTeamType = PhotonNetwork.LocalPlayer.CustomProperties["TeamType"].ToString();
+        int _order = 0;
+
+        for (int i = 0; i < _players.Length; i++)
+        {
+            if (_players[i].CustomProperties["TeamType"].ToString() == myTeamType)
+            {
+                if (_players[i] == PhotonNetwork.LocalPlayer)
+                    return _order;
+                else
+                    _order++;
+            }
+        }
+
+        DebugMgr.LogErr($"TeamType Property Error - [{myTeamType}]");
+        return -1;
     }
 
     public static bool CheckGameStartCondition()

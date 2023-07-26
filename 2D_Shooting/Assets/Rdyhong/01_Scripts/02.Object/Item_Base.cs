@@ -41,4 +41,9 @@ public class Item_Base : MonoBehaviour
     {
 
     }
+
+    public virtual bool CheckUseCondition()
+    {
+        return false;
+    }
 }

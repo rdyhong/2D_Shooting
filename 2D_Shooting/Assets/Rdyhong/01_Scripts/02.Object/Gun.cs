@@ -82,7 +82,7 @@ public class Gun : Item_Base
         
     }
 
-    bool CheckFireCondition()
+    public override bool CheckUseCondition()
     {
         if (curruntDelay <= 0)
         {
@@ -94,7 +94,7 @@ public class Gun : Item_Base
 
     public override void Use()
     {
-        if (!CheckFireCondition()) return;
+        //if (!CheckFireCondition()) return;
 
         base.Use();
 

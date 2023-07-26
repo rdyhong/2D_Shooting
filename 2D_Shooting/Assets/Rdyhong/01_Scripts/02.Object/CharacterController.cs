@@ -4,6 +4,11 @@ using UnityEngine;
 using DG.Tweening;
 using Photon.Pun;
 
+public interface IDamageable
+{
+    void OnDamage(float damage, Vector3 hitPoint, Vector3 hitNormal);
+}
+
 public class CharacterController : MonoBehaviourPun, IPunObservable
 {
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -104,8 +109,7 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
 
             if (InputMgr.isFire)
             {
-                if(equiped_Item != null)
-                    equiped_Item.Use();
+                UseItem();
             }
         }
     }
@@ -154,14 +158,32 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
             isOnAim = false;
         }
     }
-
-    public void EquipItem(int idx)
+    private void UseItem()
     {
-        photonView.RPC(nameof(RPC_EquipItem_Proccess), RpcTarget.MasterClient, idx);
+        photonView.RPC(nameof(RPC_UseItem_OnMaster), RpcTarget.MasterClient, null);
     }
 
     [PunRPC]
-    void RPC_EquipItem_Proccess(int _idx)
+    void RPC_UseItem_OnMaster()
+    {
+        if (equiped_Item != null)
+            if (equiped_Item.CheckUseCondition())
+                photonView.RPC(nameof(RPC_UseItem), RpcTarget.All, null);
+    }
+
+    [PunRPC]
+    void RPC_UseItem()
+    {
+        equiped_Item.Use();
+    }
+
+    public void EquipItem(int idx)
+    {
+        photonView.RPC(nameof(RPC_EquipItem_OnMaster), RpcTarget.MasterClient, idx);
+    }
+
+    [PunRPC]
+    void RPC_EquipItem_OnMaster(int _idx)
     {
         // Check on MasterClient
 
@@ -188,11 +210,11 @@ public class CharacterController : MonoBehaviourPun, IPunObservable
 
     public void DropItem()
     {
-        photonView.RPC(nameof(RPC_DropItem_Proccess), RpcTarget.MasterClient, equiped_Item.idx);
+        photonView.RPC(nameof(RPC_DropItem_OnMaster), RpcTarget.MasterClient, equiped_Item.idx);
     }
 
     [PunRPC]
-    void RPC_DropItem_Proccess(int _idx)
+    void RPC_DropItem_OnMaster(int _idx)
     {
         // Check on MasterClient
 

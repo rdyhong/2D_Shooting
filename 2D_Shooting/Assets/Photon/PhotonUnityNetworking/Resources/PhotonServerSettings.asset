@@ -49,6 +49,10 @@ MonoBehaviour:
   - RPC_Init
   - RPC_EquipItem_Proccess
   - RPC_DropItem_Proccess
+  - RPC_EquipItem_OnMaster
+  - RPC_DropItem_OnMaster
+  - RPC_UseItem_OnMaster
+  - RPC_UseItem
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
